@@ -1,13 +1,117 @@
+# pyproject.toml
+
 [tool.semantic_release]
-version_source = "tag"
-upload_to_pypi = false
+# 1. 버전 관리 대상 파일
+version_source = "tag" #버전 소스를 'tag'로 설정하여 Git 태그를 기준으로 버전을 결정
+tag_commit = true # 새 릴리스 시 Git 태그를 생성합니다.
+hvcs = "github" # 사용할 호스팅 서비스를 지정합니다.
 branch = "master"
-initial_release = true
-commit_parser = "conventional"
-changelog_file = "CHANGELOG.md"
+commit_parser = "conventional" # 커밋 메시지 파서를 Conventional Commits 규격으로 설정
+
+upload_to_release = true # GitHub에 릴리스를 생성합니다.
+
+# 빌드 명령어
 build_command = """
-pyinstaller --noconfirm --onefile --windowed ^
---add-binary "ffmpeg\\ffmpeg.exe;." ^
---name "YouTubeDownloader" main.py
+pyinstaller --onefile --windowed --clean \
+  --name YouTubeDownloader \
+  --add-binary "ffmpeg/ffmpeg.exe;ffmpeg" \
+  "main.py"
 """
-#build_command = "pyinstaller --noconfirm --onefile --windowed --add-binary '/opt/homebrew/bin/ffmpeg:.' --name 'YouTubeDownloader' main.py"
+
+# 릴리스에 포함할 파일 지정
+gh_release_glob = ["dist/YouTubeDownloader.exe"]
+
+
+
+upload_to_pypi = false
+
+[tool.semantic_release.changelog]
+changelog_file = "CHANGELOG.md" # 변경 이력(changelog)을 생성할 파일 이름을 지정
+include_release_notes = true # 릴리스 노트를 changelog 파일에 추가할지 여부
+
+template = """
+# 📦 Changelog
+
+{% for version, details in versions %}
+## 🚀 {{ version | upper }} ({{ details.date.strftime('%Y-%m-%d') }})
+
+{% if details.sections.get("feat") %}
+### ✨ Features
+{% for commit in details.sections["feat"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("fix") %}
+### 🐛 Fixes
+{% for commit in details.sections["fix"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("chore") %}
+### 🧹 Chores
+{% for commit in details.sections["chore"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("docs") %}
+### 📝 Docs
+{% for commit in details.sections["docs"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("refactor") %}
+### ♻️ Refactors
+{% for commit in details.sections["refactor"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("perf") %}
+### ⚡ Performance
+{% for commit in details.sections["perf"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("test") %}
+### ✅ Tests
+{% for commit in details.sections["test"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("build") %}
+### 🏗️ Build
+{% for commit in details.sections["build"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("ci") %}
+### ⚙️ CI
+{% for commit in details.sections["ci"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+{% if details.sections.get("style") %}
+### 💅 Style
+{% for commit in details.sections["style"] %}
+- {{ commit.descriptions[0] }} ({{ commit.commit_hash[:7] }})
+{% endfor %}
+{% endif %}
+
+---
+{% endfor %}
+"""
+
+#build_command = """
+#pyinstaller --onefile --windowed --clean --add-binary "ffmpeg/ffmpeg.exe;ffmpeg" --name "YouTubeDownloader" main.py
+#"""
+
+#version_toml = "pyproject.toml:tool.poetry.version" #버전 태그를 기반으로 pyproject.toml 파일을 자동으로 업데이트
+#commit_version_number = true # 버전이 업데이트된 커밋을 생성합니다 (version_source가 'tag'일 때 필요).
