@@ -2,6 +2,12 @@
 version_source = "tag"
 upload_to_pypi = false
 branch = "master"
+initial_release = true
 commit_parser = "conventional"
 changelog_file = "CHANGELOG.md"
-build_command = "pyinstaller --noconfirm --onefile --windowed --add-binary '/opt/homebrew/bin/ffmpeg:.' --name 'YouTubeDownloader' main.py"
+build_command = """
+pyinstaller --noconfirm --onefile --windowed ^
+--add-binary "ffmpeg\\ffmpeg.exe;." ^
+--name "YouTubeDownloader" main.py
+"""
+#build_command = "pyinstaller --noconfirm --onefile --windowed --add-binary '/opt/homebrew/bin/ffmpeg:.' --name 'YouTubeDownloader' main.py"
