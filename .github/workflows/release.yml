@@ -19,6 +19,13 @@ jobs:
         with:
           fetch-depth: 0  # 모든 커밋 필요 (semantic 분석용)
 
+      - name: Set UTF-8 Encoding
+        shell: powershell
+        run: |
+          chcp 65001
+          $env:PYTHONIOENCODING = "utf-8"
+          $env:PYTHONUTF8 = "1"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
