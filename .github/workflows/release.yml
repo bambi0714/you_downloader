@@ -1,8 +1,7 @@
 name: Build and Release Youtue EXE on Merge
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - master
 
@@ -13,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 모든 커밋 필요 (semantic 분석용)
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install python-semantic-release pyinstaller
 
       - name: Download ffmpeg
         run: |
@@ -31,35 +32,8 @@ jobs:
           move ffmpeg\*\bin\ffmpeg.exe ffmpeg\
         shell: pwsh
 
-      - name: Build EXE with PyInstaller
-        run: |
-          pyinstaller --noconfirm --onefile --windowed ^
-            --add-binary "ffmpeg\\ffmpeg.exe;." ^
-            --name "Youtue" main.py
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Youtue-exe
-          path: dist/Youtue.exe
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Youtue-exe
-          path: .
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.run_number }}  # 자동 증가 버전
-          name: "Youtue Build #${{ github.run_number }}"
-          body: "자동 빌드된 실행 파일입니다 (main merge 기준)."
-          files: YouTubeDownloader.exe
+      - name: Run Semantic Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          semantic-release publish
