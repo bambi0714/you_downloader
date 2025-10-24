@@ -25,7 +25,7 @@ gh_release_glob = ["dist/YouTubeDownloader.exe"]
 
 upload_to_pypi = false
 
-[tool.semantic_release.changelog]
+[tool.semantic_release.changelog.default_templates]
 changelog_file = "CHANGELOG.md" # 변경 이력(changelog)을 생성할 파일 이름을 지정
 include_release_notes = true # 릴리스 노트를 changelog 파일에 추가할지 여부
 
