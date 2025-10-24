@@ -1,4 +1,27 @@
 # Default ignored files
-/.idea
 
-/*.txt
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.spec
+.env
+venv/
+build/
+dist/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Output
+*.exe
+
+# ffmpeg
+ffmpeg/ffmpeg.exe

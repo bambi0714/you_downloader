@@ -1,0 +1,4 @@
+PyQt6==6.10.0
+PyQt6-WebEngine==6.9.0
+pyqt6-sip==13.10.2
+yt_dlp==2025.10.22
